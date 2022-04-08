@@ -1,0 +1,121 @@
+certificateAuthorities:
+  org3-ca.fabric:
+    caName: ca
+    registrar:
+      enrollId: enroll
+      enrollSecret: enrollpw
+    tlsCACerts:
+      pem:
+        - |
+          -----BEGIN CERTIFICATE-----
+          MIICaDCCAg6gAwIBAgIRAOqpaeu3F8F/OMUXPQj1EuYwCgYIKoZIzj0EAwIwUjET
+          MBEGA1UEBhMKQ2FsaWZvcm5pYTEJMAcGA1UEBxMAMQkwBwYDVQQJEwAxFDASBgNV
+          BAoTC0h5cGVybGVkZ2VyMQ8wDQYDVQQLEwZGYWJyaWMwHhcNMjIwNDA3MDgzNzE5
+          WhcNMzIwNDA4MDgzNzE5WjBSMRMwEQYDVQQGEwpDYWxpZm9ybmlhMQkwBwYDVQQH
+          EwAxCTAHBgNVBAkTADEUMBIGA1UEChMLSHlwZXJsZWRnZXIxDzANBgNVBAsTBkZh
+          YnJpYzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCHAdKeRl1K2zfthrJmU3LZC
+          cMQ0H+nMrAQtHk6SkN1iGPreurbCI49rTBeZ6u0415bjVaefg0k6ucbC7tUZUtKj
+          gcQwgcEwDgYDVR0PAQH/BAQDAgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+          BQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1UdDgQiBCABomK9rSlnYwkHB4/UJiMC
+          ApjIo0obgMkBe5ypt2PjpzBUBgNVHREETTBLgglsb2NhbGhvc3SCB29yZzMtY2GC
+          Dm9yZzMtY2EuZmFicmljghlvcmczLWNhLmhsZi1ibG9ja2NoYWluLnRrhwR/AAAB
+          hwSkXFPYMAoGCCqGSM49BAMCA0gAMEUCIDC8/J68dgfoty26lgApslfJX0nKi7e+
+          vV25HALSBl5oAiEAgs0al3LgIyPG87vkkMBIOv/MdhIbKDbbfK+9wb4LhTg=
+          -----END CERTIFICATE-----
+    url: https://org3-ca.hlf-blockchain.tk:443
+channels:
+  _default:
+    orderers:
+      - ord-node1.fabric
+    peers:
+      org3-peer1.fabric:
+        chaincodeQuery: true
+        discover: true
+        endorsingPeer: true
+        eventSource: true
+        ledgerQuery: true
+client:
+  organization: <no value>
+name: hlf-network
+orderers:
+  ord-node1.fabric:
+    grpcOptions:
+      allow-insecure: false
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICRDCCAeugAwIBAgIQZc9hibJ+i9Ucj+WvF/s64jAKBggqhkjOPQQDAjBtMQsw
+        CQYDVQQGEwJFUzERMA8GA1UEBxMIQWxpY2FudGUxETAPBgNVBAkTCEFsaWNhbnRl
+        MRkwFwYDVQQKExBLdW5nIEZ1IFNvZnR3YXJlMQ0wCwYDVQQLEwRUZWNoMQ4wDAYD
+        VQQDEwV0bHNjYTAeFw0yMjA0MDcwNjI3NDFaFw0zMjA0MDgwNjI3NDFaMG0xCzAJ
+        BgNVBAYTAkVTMREwDwYDVQQHEwhBbGljYW50ZTERMA8GA1UECRMIQWxpY2FudGUx
+        GTAXBgNVBAoTEEt1bmcgRnUgU29mdHdhcmUxDTALBgNVBAsTBFRlY2gxDjAMBgNV
+        BAMTBXRsc2NhMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEdistDS6uq8cHxl9B
+        KI01lt+BDG8E7ZlXnnyf20oHOaLofUc5+HFZ4qWV84xGz66OswwGMCvicJ5HL8zm
+        qfeSX6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
+        BgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1UdDgQiBCAmXMm+GkfaDuMgV+ft
+        EeKpPToWLazsFntyURq0iXLArzAKBggqhkjOPQQDAgNHADBEAiAviCW3/+kgRIot
+        r5yd+QIf7fbDAzTI+dW6cIuFWqlOJgIgH5trRqBBHZbIAT9Dedkqng0+Dlfh9fAg
+        XQrbNIz0QGQ=
+        -----END CERTIFICATE-----
+    url: grpcs://ord-node1.hlf-blockchain.tk:443
+
+organizations:
+  Org3MSP:
+    cryptoPath: /tmp/cryptopath
+    mspid: Org3MSP
+    orderers:
+      - ord-node1.fabric
+    peers:
+      - org3-peer1.fabric
+    users:
+      admin:
+        cert:
+          pem: |
+            -----BEGIN CERTIFICATE-----
+            MIICUzCCAfmgAwIBAgIUch62h0yhaD4HUkf1EdCuzDZGPSkwCgYIKoZIzj0EAwIw
+            ajELMAkGA1UEBhMCRVMxETAPBgNVBAcTCEFsaWNhbnRlMREwDwYDVQQJEwhBbGlj
+            YW50ZTEZMBcGA1UEChMQS3VuZyBGdSBTb2Z0d2FyZTENMAsGA1UECxMEVGVjaDEL
+            MAkGA1UEAxMCY2EwHhcNMjIwNDA4MDgzODAwWhcNMjMwNDA4MDg0MzAwWjAgMQ4w
+            DAYDVQQLEwVhZG1pbjEOMAwGA1UEAxMFYWRtaW4wWTATBgcqhkjOPQIBBggqhkjO
+            PQMBBwNCAAQzwc5qsQVhyigTB+U/UxwZcy3nv2STCTj/iKhY6ilLxfMnolejYSgW
+            rRm+mwvx0SiPdYESyCsSYbVRhRvc/3WWo4HGMIHDMA4GA1UdDwEB/wQEAwIHgDAM
+            BgNVHRMBAf8EAjAAMB0GA1UdDgQWBBTCtVVEf2CUtMMo5BJNJpq8LpNIgjArBgNV
+            HSMEJDAigCD6p78WsM8tWZv4uSI6ahWoU6k3mKCixyxsqLi5P/ooDjBXBggqAwQF
+            BgcIAQRLeyJhdHRycyI6eyJoZi5BZmZpbGlhdGlvbiI6IiIsImhmLkVucm9sbG1l
+            bnRJRCI6ImFkbWluIiwiaGYuVHlwZSI6ImFkbWluIn19MAoGCCqGSM49BAMCA0gA
+            MEUCIQCzT35auuLbPATvPfu2nLg1TtzLy6y+xqzyY8A4tPsq+gIgMJc9AmfYS0sP
+            zLRkQqgCJo9eyerrPQc97SagxOI59h8=
+            -----END CERTIFICATE-----
+        key:
+          pem: |
+            -----BEGIN PRIVATE KEY-----
+            MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgED1uScHRwdSS3Nw5
+            pmjMMroTEPjuH08rrFxCEZxxCPqhRANCAAQzwc5qsQVhyigTB+U/UxwZcy3nv2ST
+            CTj/iKhY6ilLxfMnolejYSgWrRm+mwvx0SiPdYESyCsSYbVRhRvc/3WW
+            -----END PRIVATE KEY-----
+peers:
+  org3-peer1.fabric:
+    grpcOptions:
+      allow-insecure: false
+      hostnameOverride: ""
+      ssl-target-name-override: ""
+    tlsCACerts:
+      pem: |
+        -----BEGIN CERTIFICATE-----
+        MIICRTCCAeygAwIBAgIRAKlrU8Aox11jM2cM+uUnGoYwCgYIKoZIzj0EAwIwbTEL
+        MAkGA1UEBhMCRVMxETAPBgNVBAcTCEFsaWNhbnRlMREwDwYDVQQJEwhBbGljYW50
+        ZTEZMBcGA1UEChMQS3VuZyBGdSBTb2Z0d2FyZTENMAsGA1UECxMEVGVjaDEOMAwG
+        A1UEAxMFdGxzY2EwHhcNMjIwNDA3MDgzNzE5WhcNMzIwNDA4MDgzNzE5WjBtMQsw
+        CQYDVQQGEwJFUzERMA8GA1UEBxMIQWxpY2FudGUxETAPBgNVBAkTCEFsaWNhbnRl
+        MRkwFwYDVQQKExBLdW5nIEZ1IFNvZnR3YXJlMQ0wCwYDVQQLEwRUZWNoMQ4wDAYD
+        VQQDEwV0bHNjYTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOfbSXeS0BOWTQvc
+        KW/HKnBXqHWZgIYSBVMOrpD0gMytlxV07a4sxj0TcVQHMa3c0vHI4Mn5wS8EX9lG
+        maMEjp+jbTBrMA4GA1UdDwEB/wQEAwIBpjAdBgNVHSUEFjAUBggrBgEFBQcDAgYI
+        KwYBBQUHAwEwDwYDVR0TAQH/BAUwAwEB/zApBgNVHQ4EIgQgf94H4cXQ1dFhe1IJ
+        rBr/LrSV1tfrbFjcTPfxTQ0518owCgYIKoZIzj0EAwIDRwAwRAIgc1X9fEFh2xY1
+        EMjarM4wWmrfw6yHhBPJIiTJ4rRDn7sCIFyU1cvf4TtUA2zhsc4zwYWeZ9JIAR+l
+        rez61ix+7RSx
+        -----END CERTIFICATE-----
+    url: grpcs://org3-peer1.hlf-blockchain.tk:443
+version: 1.0.0

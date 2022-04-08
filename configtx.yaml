@@ -1,0 +1,59 @@
+
+---
+################################################################################
+#
+#   ORGANIZATIONS
+#
+#   This section defines the organizational identities that can be referenced
+#   in the configuration profiles.
+#
+################################################################################
+Organizations:
+
+  # Org3MSP defines an MSP using the sampleconfig. It should never be used
+  # in production but may be used as a template for other definitions.
+  -
+    # Name is the key by which this org will be referenced in channel
+    # configuration transactions.
+    # Name can include alphanumeric characters as well as dots and dashes.
+    Name: Org3MSP
+
+    # SkipAsForeign can be set to true for org definitions which are to be
+    # inherited from the orderer system channel during channel creation.  This
+    # is especially useful when an admin of a single org without access to the
+    # MSP directories of the other orgs wishes to create a channel.  Note
+    # this property must always be set to false for orgs included in block
+    # creation.
+    SkipAsForeign: false
+
+    # ID is the key by which this org's MSP definition will be referenced.
+    # ID can include alphanumeric characters as well as dots and dashes.
+    ID: Org3MSP
+
+    # MSPDir is the filesystem path which contains the MSP configuration.
+    MSPDir: crypto-config/peerOrganizations/Org3MSP/msp
+    MSPType: bccsp
+
+    # Policies defines the set of policies at this level of the config tree
+    # For organization policies, their canonical path is usually
+    #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+    Policies: &Org3MSPPolicies
+      Readers:
+        Type: Signature
+        Rule: "OR('Org3MSP.member')"
+        # If your MSP is configured with the new NodeOUs, you might
+        # want to use a more specific rule like the following:
+        # Rule: "OR('Org3MSP.admin', 'Org3MSP.peer', 'Org3MSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('Org3MSP.member')"
+        # If your MSP is configured with the new NodeOUs, you might
+        # want to use a more specific rule like the following:
+        # Rule: "OR('Org3MSP.admin', 'Org3MSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('Org3MSP.admin')"
+      Endorsement:
+        Type: Signature
+        Rule: "OR('Org3MSP.member')"
+
