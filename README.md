@@ -154,3 +154,7 @@ kubectl hlf chaincode invoke --config=networkConfig.yaml --user=admin --peer=org
 ```
 kubectl hlf chaincode query --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=fabcar --channel=mychannel --fcn=QueryCar -a "100"
 ```
+
+### Also read
+1. [Istio Enabled blockchain network](ISTIO.md)
+2. [Adding new org running in different kubernetes cluster](ADD-ORG.md)
