@@ -125,16 +125,16 @@ Eg:
     port: 443
 ```
 
+#### Orderer join channel
 ```bash
-# Orderer join channel
 kubectl hlf ordnode join --block=mychannel.block --name=ord-node1 --namespace=fabric --identity=admin-tls-ordservice.yaml --namespace=fabric
 kubectl hlf ordnode join --block=mychannel.block --name=ord-node2 --namespace=fabric --identity=admin-tls-ordservice.yaml --namespace=fabric
 kubectl hlf ordnode join --block=mychannel.block --name=ord-node3 --namespace=fabric --identity=admin-tls-ordservice.yaml --namespace=fabric
 
 ```
 
+#### peer channel join
 ```bash
-# peer channel join
 kubectl hlf channel join --name=mychannel --config=networkConfig.yaml --user=admin -p=org1-peer1.fabric
 kubectl hlf channel join --name=mychannel --config=networkConfig.yaml --user=admin -p=org1-peer2.fabric
 kubectl hlf channel join --name=mychannel --config=networkConfig.yaml --user=admin -p=org2-peer1.fabric
@@ -181,9 +181,10 @@ tar cfz chaincode.tgz metadata.json code.tar.gz
 export PACKAGE_ID=$(kubectl hlf chaincode calculatepackageid --path=chaincode.tgz --language=node --label=$CHAINCODE_LABEL)
 echo "PACKAGE_ID=$PACKAGE_ID"
 
+#### Chaincode Install
+```bash
 kubectl hlf chaincode install --path=./chaincode.tgz --config=networkConfig.yaml --language=golang --label=$CHAINCODE_LABEL --user=admin --peer=org1-peer1.fabric
 kubectl hlf chaincode install --path=./chaincode.tgz --config=networkConfig.yaml --language=golang --label=$CHAINCODE_LABEL --user=admin --peer=org1-peer2.fabric
-
 
 kubectl hlf chaincode install --path=./chaincode.tgz --config=networkConfig.yaml --language=golang --label=$CHAINCODE_LABEL --user=admin --peer=org2-peer1.fabric
 kubectl hlf chaincode install --path=./chaincode.tgz --config=networkConfig.yaml --language=golang --label=$CHAINCODE_LABEL --user=admin --peer=org2-peer2.fabric
@@ -237,12 +238,12 @@ kubectl hlf chaincode commit --config=networkConfig.yaml --user=admin --mspid=Or
 kubectl hlf chaincode invoke --config=networkConfig.yaml \
     --user=admin --peer=org1-peer1.fabric \
     --chaincode=asset --channel=mychannel \
-    --fcn=initLedger -a '[]'
+    --fcn=InitLedger -a '[]'
     
 kubectl hlf chaincode invoke --config=networkConfig.yaml \
     --user=admin --peer=org1-peer1.fabric \
     --chaincode=asset --channel=mychannel \
-    --fcn=CreateAsset -a "100" -a "honda" -a "5" -a "red" -a "2000"
+    --fcn=CreateAsset -a "100" -a "Red" -a "5" -a "Aditya" -a "2000"
 
 kubectl hlf chaincode query --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=asset --channel=mychannel --fcn=GetAllAssets
 ```
