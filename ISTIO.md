@@ -1,12 +1,10 @@
 # HLF Operator With Istio
 
-## Adding Istio and HLF Opertor
+### Adding Istio and HLF Opertor
 
 ```bash
 helm repo add kfs https://kfsoftware.github.io/hlf-helm-charts --force-update
 helm install hlf-operator --version=1.8.0-beta9 --set image.tag=v1.8.0 kfs/hlf-operator
-OR
-helm install hlf-operator ./chart/hlf-operator
 
 istioctl install --set profile=default -y
 
@@ -20,6 +18,25 @@ export CA_IMAGE=hyperledger/fabric-ca
 export CA_VERSION=1.5
 export SC=$(kubectl get sc -o=jsonpath='{.items[0].metadata.name}')
 export DOMAIN=
+```
+### Update the DNS A Record
+```
+org1-ca.$DOMAIN
+org2-ca.$DOMAIN
+ord-ca.$DOMAIN
+
+org1-peer1.$DOMAIN
+org1-peer2.$DOMAIN
+org2-peer1.$DOMAIN
+org2-peer2.$DOMAIN
+
+ord-node1.$DOMAIN
+ord-node2.$DOMAIN
+ord-node3.$DOMAIN
+
+ord-node1-admin.$DOMAIN
+ord-node2-admin.$DOMAIN
+ord-node3-admin.$DOMAIN
 ```
 
 ### CA
@@ -60,18 +77,6 @@ kubectl hlf ca register --name=org2-ca --user=admin --secret=adminpw --type=admi
 kubectl hlf ca enroll --name=org2-ca --user=admin --secret=adminpw --ca-name ca  --output org2-peer.yaml --mspid=Org2MSP --namespace=fabric
 ```
 
-### Connection Profile
-
-```bash
-kubectl hlf inspect --output networkConfig.yaml -o Org1MSP -o OrdererMSP -o Org2MSP
-```
-
-```bash
-# adding users to connection profile
-kubectl hlf utils adduser --userPath=org1-peer.yaml --config=networkConfig.yaml --username=admin --mspid=Org1MSP
-kubectl hlf utils adduser --userPath=org2-peer.yaml --config=networkConfig.yaml --username=admin --mspid=Org2MSP
-```
-
 ### Orderer
 
 ```bash
@@ -79,11 +84,11 @@ kubectl hlf ca register --name=ord-ca --user=orderer --secret=ordererpw  --type=
 ```
 
 ```bash
-kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node1 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node1.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION
+kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node1 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node1.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION --admin-hosts=ord-node1-admin.$DOMAIN
 
-kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node2 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node2.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION
+kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node2 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node2.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION --admin-hosts=ord-node2-admin.$DOMAIN
 
-kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node3 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node3.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION
+kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node3 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node3.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=$ORDERER_IMAGE --version=$ORDERER_VERSION --admin-hosts=ord-node3-admin.$DOMAIN
 ```
 
 ```bash
@@ -92,13 +97,13 @@ kubectl-hlf ca enroll --name=ord-ca --user=admin --secret=adminpw --mspid=Ordere
 kubectl-hlf ca enroll --name=ord-ca --user=admin --secret=adminpw --mspid=OrdererMSP --ca-name tlsca  --output admin-tls-ordservice.yaml --namespace=fabric
 ```
 
+### Connection Profile
+
 ```bash
 
 kubectl-hlf inspect --output ordservice.yaml -o OrdererMSP
 kubectl-hlf utils adduser --userPath=admin-ordservice.yaml --config=ordservice.yaml --username=admin --mspid=OrdererMSP
 ```
-
-### Connection Profile
 
 ```bash
 kubectl hlf inspect --output networkConfig.yaml -o Org1MSP -o OrdererMSP -o Org2MSP
@@ -112,17 +117,6 @@ kubectl hlf utils adduser --userPath=org2-peer.yaml --config=networkConfig.yaml 
 ```bash
 # create channel - mychannel
 kubectl hlf channel generate --output=mychannel.block --name=mychannel --organizations Org1MSP --organizations Org2MSP --ordererOrganizations OrdererMSP
-```
-
-### Fix the Orderer Admin service
-Add the admin hosts inside the `spec.adminIstio`
-Eg:
-```
-  adminIstio:
-    hosts:
-      - ord-node1-admin.$DOMAIN
-    ingressGateway: ingressgateway
-    port: 443
 ```
 
 #### Orderer join channel
