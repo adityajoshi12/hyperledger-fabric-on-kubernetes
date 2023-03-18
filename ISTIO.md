@@ -180,6 +180,7 @@ tar cfz code.tar.gz connection.json
 tar cfz chaincode.tgz metadata.json code.tar.gz
 export PACKAGE_ID=$(kubectl hlf chaincode calculatepackageid --path=chaincode.tgz --language=node --label=$CHAINCODE_LABEL)
 echo "PACKAGE_ID=$PACKAGE_ID"
+```
 
 #### Chaincode Install
 ```bash
