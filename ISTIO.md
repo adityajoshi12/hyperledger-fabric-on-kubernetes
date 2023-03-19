@@ -8,6 +8,8 @@ helm install hlf-operator --version=1.8.0-beta9 --set image.tag=v1.8.0 kfs/hlf-o
 
 istioctl install --set profile=default -y
 
+kubectl krew install hlf
+
 export PEER_IMAGE=hyperledger/fabric-peer
 export PEER_VERSION=2.4.6
 
