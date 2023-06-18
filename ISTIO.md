@@ -65,7 +65,7 @@ kubectl hlf ca register --name=ord-ca --user=orderer --secret=ordererpw  --type=
 ```
 
 ```bash
-kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node1 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node1.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443
+kubectl hlf ordnode create  --storage-class=do-block-storage --enroll-id=orderer --mspid=OrdererMSP --enroll-pw=ordererpw --capacity=2Gi --name=ord-node1 --ca-name=ord-ca.fabric --namespace=fabric --hosts=ord-node1.$DOMAIN --istio-ingressgateway=ingressgateway --istio-port=443 --image=hyperledger/fabric-orderer --version=2.5.0 --admin-hosts=ord-node1-admin.$DOMAIN
 ```
 
 ```bash
