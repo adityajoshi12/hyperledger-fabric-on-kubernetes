@@ -24,7 +24,7 @@ kubectl hlf ca create --storage-class=do-block-storage --capacity=2Gi --name=ord
 
 ```bash
 # GET ALL CAs
-kubectl get [fabriccas.hlf.kungfusoftware.es](http://fabriccas.hlf.kungfusoftware.es/) -A
+kubectl get fabriccas.hlf.kungfusoftware.es -A
 ```
 
 ### Peer
