@@ -128,31 +128,71 @@ kubectl hlf channel addanchorpeer --channel=mychannel --config=networkConfig.yam
 ### Chaincode
 
 ```bash
-kubectl hlf chaincode install --path= --config=networkConfig.yaml --language=golang --label=fabcar --user=admin --peer=org1-peer1.fabric
-kubectl hlf chaincode install --path=./chaincode/fabcar/go --config=networkConfig.yaml --language=golang --label=fabcar --user=admin --peer=org1-peer2.fabric
-kubectl hlf chaincode install --path=./chaincode/fabcar/go --config=networkConfig.yaml --language=golang --label=fabcar --user=admin --peer=org2-peer1.fabric
+CC_NAME=mycc
+cat <<METADATA-EOF >"metadata.json"
+    {
+        "type": "ccaas",
+        "label": "${CC_NAME}"
+     }
+METADATA-EOF
+
+cat <<CONN_EOF >"connection.json"
+    {
+    "address": "${CC_NAME}:7052",
+    "dial_timeout": "10s",
+    "tls_required": false
+    }
+CONN_EOF
+
+tar cfz code.tar.gz connection.json
+tar cfz ${CC_NAME}-external.tgz metadata.json code.tar.gz
+PACKAGE_ID=$(kubectl-hlf chaincode calculatepackageid --path=$CC_NAME-external.tgz --language=node --label=$CC_NAME)
+echo "PACKAGE_ID=$PACKAGE_ID"
 ```
 
-```bash
-kubectl-hlf chaincode queryinstalled --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric
-```
+### Installing Chaincode
 
 ```bash
-kubectl hlf chaincode approveformyorg --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --package-id=$PACKAGE_ID --version 1 --sequence 1 --name=fabcar --policy="OR('Org1MSP.peer','Org2MSP.peer')" --channel=mychannel
-kubectl hlf chaincode approveformyorg --config=networkConfig.yaml --user=admin --peer=org2-peer1.fabric --package-id=$PACKAGE_ID --version 1 --sequence 1 --name=fabcar --policy="OR('Org1MSP.peer','Org2MSP.peer')" --channel=mychannel
+kubectl hlf chaincode install --path=./${CC_NAME}-external.tgz --config=networkConfig.yaml --language=node --label=$CC_NAME --user=admin --peer=org1-peer1.fabric
+kubectl hlf chaincode install --path=./${CC_NAME}-external.tgz --config=networkConfig.yaml --language=node --label=$CC_NAME --user=admin --peer=org2-peer1.fabric
 ```
 
+### Chaincode Containerizing
+
 ```bash
-kubectl-hlf chaincode commit --config=networkConfig.yaml --mspid=Org1MSP --user=admin --version 1 --sequence 1 --name=fabcar --policy="OR('Org1MSP.peer','Org2MSP.peer')" --channel=mychannel
+chaincode structure
+package.json file
+dockerfile
+docker build and push
+```
+
+### Deploying Chaincode
+
+```bash
+kubectl hlf externalchaincode sync --image=adityajoshi12/hlf-nodejs-external-cc:latest --name=$CC_NAME --namespace=fabric --package-id=$PACKAGE_ID --tls-required=false --replicas=1
+```
+
+### Approve Chaincode
+
+```bash
+kubectl hlf chaincode approveformyorg --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --package-id=$PACKAGE_ID --version 1.0 --sequence 1 --name=$CC_NAME --policy="OR('Org1MSP.member','Org2MSP.member')" --channel=mychannel
+kubectl hlf chaincode approveformyorg --config=networkConfig.yaml --user=admin --peer=org2-peer1.fabric --package-id=$PACKAGE_ID --version 1.0 --sequence 1 --name=$CC_NAME --policy="OR('Org1MSP.member','Org2MSP.member')" --channel=mychannel
+```
+
+### Commit Chaincode
+
+```bash
+kubectl hlf chaincode commit --config=networkConfig.yaml --mspid=Org1MSP --user=admin --version 1.0 --sequence 1 --name=$CC_NAME --policy="OR('Org1MSP.member','Org2MSP.member')" --channel=mychannel
 ```
 
 ### Invoke/Query
-```
-kubectl hlf chaincode invoke --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=fabcar --channel=mychannel --fcn=CreateCar -a "200" -a "Jeep" -a "Compass" -a "silver" -a "aditya"
+
+```bash
+kubectl hlf chaincode invoke --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=$CC_NAME --channel=mychannel --fcn=createCar -a "1000" -a "honda" -a "civic" -a "red" -a "aditya"
 ```
 
-```
-kubectl hlf chaincode query --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=fabcar --channel=mychannel --fcn=QueryCar -a "100"
+```bash
+kubectl hlf chaincode query --config=networkConfig.yaml --user=admin --peer=org1-peer1.fabric --chaincode=$CC_NAME --channel=mychannel --fcn=queryAllCars -a ''
 ```
 
 ### Also read
